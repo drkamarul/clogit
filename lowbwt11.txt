@@ -1,0 +1,20 @@
+
+Code Sheet for the Variables in the 1-1matched Low Birth Weight Study
+Described in Section 7.3 Page 230
+
+Variable	Description			Codes/Values		Name
+1		Pair				1 -50 			PAIR
+2		Low Birth Weight		1 = BWT<=2500g,		LOW
+						0 = BWT>2500g
+3		Age of Mother 			Years			AGE
+4		Weight of Mother at 		Pounds			LWT
+		Last Menstrual Period
+5		Race				1 = White, 2 = Black 	RACE
+						3  = Other
+6		Smoking Status 			0 = No, 1 = Yes		SMOKE
+		During Pregnancy
+7		History of Premature Labor	0 = None, 	 	PTD
+						1 = Yes
+8		History of Hypertension		0 = No, 1 = Yes		HT
+9		Presence of Uterine 		0 = No, 1 = Yes		UI
+		Irritability 
