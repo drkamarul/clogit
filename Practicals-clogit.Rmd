@@ -334,4 +334,4 @@ odds_low <- predict(data3final, type = "risk")
 
 1. <https://cran.r-project.org/web/packages/HSAUR2/vignettes/Ch_logistic_regression_glm.pdf>
 2. <http://grokbase.com/t/r/r-help/146gcqqxse/r-prediction-based-on-conditional-logistic-regression-clogit>
-
+3.  <http://stackoverflow.com/questions/35329585/how-to-get-fitted-values-from-clogit-model>
