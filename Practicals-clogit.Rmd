@@ -24,6 +24,17 @@ that a subject with x = 0 is a case.
 
 # Tutorial 1
 
+## Prepare workspace and data
+
+## Set working directory
+
+```{r}
+setwd("E:/Epi_Stat_Matters/LectureNotes2015/Clogit-DrPH-Epid-2015-16")
+
+```
+
+Let's get an overview of the data.
+
 ```{r}
 library(HSAUR2)
 head(backpain)
@@ -44,7 +55,7 @@ backpain_glm <- clogit(I(status == 'case') ~ driver + suburban + strata(ID), dat
 summary(backpain_glm)
 ```
 
-Interpretation
+## Interpretation
 
 The estimate of the odds ratio of a herniated disc occurring in a driver
 relative to a nondriver is 1.93 with a 95% confidence interval of (1.09, 3.44).
@@ -55,9 +66,9 @@ a person lives affects the risk of lower back pain.
 
 # Tutorial 2
 
-# Prepare workspace and data
+## Prepare workspace and data
 
-## Set working directory
+Set working directory
 
 ```{r}
 setwd("E:/Epi_Stat_Matters/LectureNotes2015/Clogit-DrPH-Epid-2015-16")
@@ -67,35 +78,50 @@ setwd("E:/Epi_Stat_Matters/LectureNotes2015/Clogit-DrPH-Epid-2015-16")
 ## Read data
 
 ```{r}
-# data1<-read.table('http://www.medepi.net/data/mi.txt',sep="")
-# write.csv(data1,'dataclogit.csv')
+# source for data 
+# use read.table('http://www.medepi.net/data/mi.txt',sep="")
 data1<-read.csv('dataclogit.csv',header = TRUE)
 ```
 
-## Give variables names
+## Overview of data 
+
+View the first 6 observations
 
 ```{r}
-#colnames(data1)<-c("x","match","person","mi","smk","sbp","ecg")
 head(data1)
-summary(data1)
 ```
 
-# Convert and Labels Data
+## Convert and Labels Data
+
+Convert the variables mi, smk and ecg to categorical variables
 
 ```{r}
-data1$mi <- factor(data1$mi, levels=0:1, labels=c("No","Yes"))
-data1$smk <- factor(data1$smk, levels=0:1, labels=c("Not current","Current"))
-data1$ecg <- factor(data1$ecg, levels=0:1, labels=c("Normal","Abnormal"))
-str(data1)
-head(data1,15)
+data1$mi2 <- factor(data1$mi, levels = c(1,0), labels = c("Case","Control"))
+data1$smk2 <- factor(data1$smk, levels = c(0,1), labels=c("Not current","Current"))
+data1$ecg2 <- factor(data1$ecg, levels = c(0,1), labels=c("Normal","Abnormal"))
+str(data1,15)
 ```
 
-# Quick Look at Data
+## Quick Look at Data
+
+View the first 15 observations
 
 ```{r}
-str(data1)
 head(data1,15)
 # load survival package to run clogit
+```
+
+Perfom data exploration
+
+```{r expl}
+library(psych)
+describe(data1)
+```
+
+Now, by groups
+
+```{r bygrps}
+describeBy(data1, group = 'mi2')
 ```
 
 # Run clogit Function
@@ -104,8 +130,7 @@ This requires **survival** package
 
 ```{r}
 library("survival")
-summary(data1)
-res.clog<-clogit(I(mi=='Yes')~smk+strata(match),data=data1)
+res.clog <- clogit(I(mi2=='Case') ~ smk2 + strata(match), data = data1)
 summary(res.clog)
 ```
 
@@ -113,7 +138,9 @@ summary(res.clog)
 
 Can read here <http://www.medepi.net/docs/ph251d2013fall_REGRESSION-CHAP.pdf>
 
-# Dataset 2
+# Tutorial 3
+
+## Dataset 2
 
 Let us play with another dataset. This tutorial comes from: 
 
@@ -128,29 +155,30 @@ load foreign library to read stata file
 ```{r}
 library(foreign)
 # read data
-data2<-read.dta('sal_outbrk.dta',convert.factors = T)
+data2 <- read.dta('sal_outbrk.dta', convert.factors = T)
 # see variable names
 names(data2)
-# quick view of the first 10 rows
 ```
 
 ## Quickly examine data
 
 ```{r}
-head(data2,10)
-# load survival package to run clogit
+head(data2)
 ```
 
-## Load survival package ti run analysis
+## Run the clogit analysis
+
+Load survival package to run analysis. clogit is a function under survival package (survival::clogit)
 
 ```{r}
 library(survival)
-list.files()
 mod7 <- clogit(I(casecontrol=='case') ~ slt_a + strata(match_grp), data = data2)
 summary(mod7)
 ```
 
-# Dataset 3
+# Tutorial 4 
+
+## Dataset 3
 
 This comes from hosmer book
 
@@ -158,7 +186,7 @@ This comes from hosmer book
 
 This data and tutorial come from example : <http://www.ats.ucla.edu/stat/stata/examples/alr2/alr2stata7.htm>
 
-## check data
+## Check data
 
 ```{r}
 readLines('lowbwt11.dat', n=5)
@@ -166,11 +194,15 @@ readLines('lowbwt11.dat', n=5)
 
 ## Import data
 
+We will read a .dat data. 
+
 ```{r}
 data3<-read.table('lowbwt11.dat')
 ```
 
-## Quickly examine data
+## Quickly view data
+
+Overview of data
 
 ```{r}
 head(data3,10)
@@ -178,39 +210,48 @@ head(data3,10)
 
 ## Names the columns
 
+We give names to columns 
+
 ```{r}
 colnames(data3)<-c('pair','low','age','lwt','race','smoke','ptd','ht','ui')
 ```
 
 ## Declare variables as factors (categorical variables)
 
+Using lapply is fast
+
 ```{r}
-data3[,c(2,5:9)]<-lapply(data3[,c(2,5:9)], as.factor)
+data3[,c(2,5:9)]<-lapply(data3[,c(2,5:9)],  as.factor)
+head(data3)
 ```
 
 ## Specify the levels of the categorical variables
 
 ```{r}
-levels(data3$low)<-c('bwt>2500g','bwt=<2500g')
-levels(data3$race)<-c('white','black','other')
-levels(data3$smoke)<-c('no','yes')
-levels(data3$ptd)<-c('none','yes')
-levels(data3$ht)<-c('no','yes')
-levels(data3$ui)<-c('no','yes')
+levels(data3$low) <- c('bwt>2500g','bwt=<2500g')
+levels(data3$race) <- c('white','black','other')
+levels(data3$smoke) <- c('no','yes')
+levels(data3$ptd) <- c('none','yes')
+levels(data3$ht) <- c('no','yes')
+levels(data3$ui) <- c('no','yes')
 str(data3)
 ```
 
 ## Perform clogit function
 
+covariate = lwt
 
-```{r}
-c.data3<-clogit(I(low=='bwt=<2500g')~lwt+strata(pair),data=data3)
+```{r lwt}
+c.data3 <- clogit(I(low=='bwt=<2500g') ~ lwt + strata(pair), data = data3)
 summary(c.data3)
-c.data3sm<-clogit(I(low=='bwt=<2500g')~smoke+strata(pair),data=data3)
+```
+
+```{r smoke}
+c.data3sm <- clogit(I(low=='bwt=<2500g') ~ smoke + strata(pair), data = data3)
 summary(c.data3sm)
 ```
 
-# Other matters
+# Other issues to consider in clogit
 
 ## Test Functional Form for Numerical Variable 
 
@@ -221,13 +262,16 @@ Can refer here <http://www.ats.ucla.edu/stat/stata/examples/alr2/alr2stata7.htm>
 
 ## **cut** function to break numerical variables
 
-but before for min 
-
 
 ```{r}
-data3$cat.lwt<-cut(data3$lwt, breaks=c(min(data3$lwt)-1,106.5,120.0,136.5,max(data3$lwt)))
+data3$cat.lwt <- cut(data3$lwt, breaks = c(min(data3$lwt)-1, 106.5, 120.0, 136.5, max(data3$lwt)))
 table(data3$cat.lwt)
-c.data3des<-clogit(I(low=='bwt=<2500g')~cat.lwt+smoke+ptd+ht+ui+strata(pair),data=data3)
+```
+
+Run clogit again
+
+```{r multicovar}
+c.data3des <- clogit(I(low=='bwt=<2500g') ~ cat.lwt + smoke + ptd + ht + ui + strata(pair), data = data3)
 summary(c.data3des)
 ```
 
@@ -237,36 +281,57 @@ Nice outputs
 
 ```{r}
 library(broom)
-c.data3des2<-tidy(c.data3des)
+c.data3des2 <- tidy(c.data3des)
+c.data3des2
+```
+
+Now, we plot the mid-points to see the pattern of 'linearity in logits'
+
+```{r midpts}
 # plot (midpoint vs beta)
-plot(c(93.3,113.5,128.5,188.5),c(0,c.data3des2[1:3,2]),type = 'l')
+plot(c(93.3, 113.5, 128.5, 188.5),c(0, c.data3des2[1:3,2]), type = 'l')
 ```
 
 ## Prediction
 
-Predict (not as good as stata)
+
 
 
 ```{r}
-data3final<-clogit(I(low=='bwt=<2500g')~lwt+smoke+ptd+ht+ui+strata(pair),data=data3)
+data3final <- clogit(I(low=='bwt=<2500g') ~ lwt + smoke + ptd + ht + ui + strata(pair), data = data3)
 summary(data3final)
-nice.op<-tidy(data3final)
+nice.op <- tidy(data3final)
 write.csv(nice.op,'tableclogit.csv')
-
-#calculate the probability of a positive outcome conditional on one positive outcome within group
-# in stata [ predict probposOC, pc1 ] for probability and [ predict LinPred, xb ] for linear 
-# predictor
-data3finalfitted<-predict(data3final,type= 'expected')
-#to predict linear prediction, not sure in R
-# need to find out how 'risk' works for below?????
-data3finalfitted<-predict(data3final,type= 'risk')
-data3finalfitted<-predict(data3final,type= 'terms')
-data3finalfitted<-predict(data3final,type= 'lp')
-
-
-
 ```
+
+calculate the probability of a positive outcome conditional on one positive outcome within group
+in stata we use 
+
+1.  [ predict probposOC, pc1 ] for probability and 
+2.  [ predict LinPred, xb ] for linear predictor (log odds) 
+
+Predict (not as good as stata):
+* type = 'expected' gives the predicted probability -  calculates the probability of a positive outcome conditional on one positive outcome within group (strata)  
+
+
+```{r prdt}
+# predicted probability 
+data3finalfitted <- predict(data3final, type = 'expected')
+cbind(data3[1:10, c(1:3, 4,6:9)], data3finalfitted[1:10])
+```
+
+* in a conditional logistic the "expected number of events" is just
+exp(eta)/(1 + exp(eta)) where eta is the linear predictor. In stata this is known as the probability of a positive outcome, assuming that the fixed effect is zero. See <http://grokbase.com/t/r/r-help/146gcqqxse/r-prediction-based-on-conditional-logistic-regression-clogit>. Also see below 
+
+```{r }
+odds_low <- predict(data3final, type = "risk")
+(odds_low/(odds_low+1))[1:10]
+```
+
+
 
 # References
 
 1. <https://cran.r-project.org/web/packages/HSAUR2/vignettes/Ch_logistic_regression_glm.pdf>
+2. <http://grokbase.com/t/r/r-help/146gcqqxse/r-prediction-based-on-conditional-logistic-regression-clogit>
+
