@@ -1,7 +1,7 @@
 ---
 title: "Analysis of Matched Case-Control Studies"
 author: "Kamarul Imran Musa"
-date: "14 February 2016"
+date: "21 February 2017"
 output: 
   pdf_document:
     toc: true
@@ -328,7 +328,13 @@ odds_low <- predict(data3final, type = "risk")
 (odds_low/(odds_low+1))[1:10]
 ```
 
+# Assignments
 
+1.  Find a suitable matched data
+2.  Run conditional logistic analysis
+3.  Run a model with and without an interaction term
+4.  Run diagnostic test
+5.  Create a publishable table
 
 # References
 
