@@ -341,3 +341,21 @@ odds_low <- predict(data3final, type = "risk")
 1. <https://cran.r-project.org/web/packages/HSAUR2/vignettes/Ch_logistic_regression_glm.pdf>
 2. <http://grokbase.com/t/r/r-help/146gcqqxse/r-prediction-based-on-conditional-logistic-regression-clogit>
 3.  <http://stackoverflow.com/questions/35329585/how-to-get-fitted-values-from-clogit-model>
+
+# Notes
+
+See page 300, Chapter 7, Regression Models for categorical Dependent variables using Stata
+
+If we estimate the predict probability (option pc1: conditional probability for single outcome within group) then we interpret like this.
+
+For example, the predicted probability for (data 1 case, 2 controls)
+
+```{r}
+id3 <- c(1,1,1)
+prob3 <- c(0.064, 0.107, 0.925)
+outcome3 <- c(0,0,1)
+data3 <- cbind(id3, outcome3, prob3)
+data3 
+```
+
+It means that this group, the predicted probability to be the case (outcome = 1 ) for first observation  is 6.4%, the second observation was 10.7% and the third observation was 92.5%.  
